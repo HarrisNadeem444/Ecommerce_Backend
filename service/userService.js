@@ -1,13 +1,13 @@
-const {models} = require("../models");
-// const bcrypt = require("bcryptjs");
+const { models } = require("../models");
+const bcrypt = require("bcryptjs");
 //Db operations
 module.exports = {
   getUser: async () => {
     const users = await models.user.findAll();
     return users;
   },
-  addUser: async(data) => {
-    // data.password = bcrypt.hashSync(data.password, 10);
+  addUser: async (data) => {
+    data.password = bcrypt.hashSync(data.password, 10);
     const users = await models.user.create(data);
     console.log(users);
     return users;
@@ -15,18 +15,18 @@ module.exports = {
 
   updatedUser: async (userId, updateUserData) => {
     const users = await models.user.findByPk(userId);
-  if (users) {
+    if (users) {
       users.update(updateUserData);
-  }
-  return users;
+    }
+    return users;
   },
 
   deleteUser: async (userId) => {
     const users = await models.user.findByPk(userId);
-  if (users) {
+    if (users) {
       users.destroy();
       return "USER DELETED SUCCESSFULLY";
-  }
-  return null;
+    }
+    return null;
   },
 };
