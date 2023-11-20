@@ -56,10 +56,64 @@ async function deleteCartController(req, res, next) {
     res.send(error);
   }
 }
+async function addToCartController(req, res, next) {
+  try {
+    const { error, value } = cartValidation.addToCart.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      return res.send(error.details.map((err) => err.message));
+    } else {
+      const { productID, cartID } = value;
+      const newlyAdded = await cartService.addToCart(productID, cartID);
+      return res.send(newlyAdded);
+    }
+  } catch (error) {
+    res.send(error);
+  }
+}
+
+async function deleteFromCartController(req, res, next) {
+  try {
+    const { error, value } = cartValidation.deleteFromCart.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      return res.send(error.details.map((err) => err.message));
+    } else {
+      const { productID, cartID } = value;
+      const deleted = await cartService.deleteFromCart(productID, cartID);
+      return res.send(deleted.toString());
+    }
+  } catch (error) {
+    res.send(error);
+  }
+}
+
+async function cartByIdController(req, res, next) {
+  try {
+    const { error, value } = cartValidation.cartById.validate(
+      { cartId: req.params.id },
+      {
+        abortEarly: true,
+      }
+    );
+    if (error) {
+      return res.send(error.details.map((err) => err.message));
+    } else {
+      const cartId = Number(value.cartId);
+      const data = await cartService.cartById(cartId);
+      res.send(data);
+    }
+  } catch (error) {}
+}
 
 module.exports = {
   cartController,
   addCartController,
   updatedCartController,
   deleteCartController,
+  addToCartController,
+  deleteFromCartController,
+  cartByIdController,
 };

@@ -29,4 +29,52 @@ module.exports = {
     }
     return null;
   },
+  addToCart: async (productID, cartID) => {
+    try {
+      const newlyAdded = await models.product_cart.create({
+        productID,
+        cartID,
+      });
+      return newlyAdded;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteFromCart: async (productID, cartID) => {
+    try {
+      const deleteProduct = await models.product_cart.destroy({
+        where: {
+          productID,
+          cartID,
+        },
+      });
+      return deleteProduct;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  cartById: async (cartId) => {
+    try {
+      const cartById = await models.cart.findByPk(cartId, {
+        include: [
+          {
+            model: models.user,
+          },
+          {
+            model: models.product,
+            through: models.product_cart,
+          },
+        ],
+      });
+      if (cartById) {
+        return cartById;
+      } else {
+        return "No cart with this ID";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };

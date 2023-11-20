@@ -29,4 +29,31 @@ module.exports = {
     }
     return null;
   },
+  productById: async (productId) => {
+    try {
+      const productById = await models.product.findByPk(productId);
+      if (productById) {
+        return productById;
+      } else {
+        return "No product Exists";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  productByCategory: async (categoryID) => {
+    try {
+      const productByCat = await models.product.findAll({
+        where: { categoryID: categoryID },
+      });
+      if (productByCat) {
+        return productByCat;
+      } else {
+        return "No category exists";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
